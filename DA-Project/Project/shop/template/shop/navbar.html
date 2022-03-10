@@ -1,0 +1,260 @@
+{% load static %}
+<header class="header">
+    <div class="header__top-navigation">
+      <div class="container">
+        <ul class="header__top-navigation-list">
+          <li class="header__top-navigation-item header__top-navigation-has-noti">
+            <a href="">
+              <i class="fa-solid fa-bell"></i>
+              <span>Thông báo</span>
+            </a>
+            <div class="header__notify">
+              <header class="header__notify-header">
+                <h3>Thông báo mới nhận</h3>
+              </header>
+              <ul class="header__notify-list">
+                <li class="header__notify-item">
+                  <a href="" class="header__notify-link header__notify-list--unview">
+                    <img src="{% static 'images/iphone12.png' %}" alt="" class="header__notify-img">
+                    <div class="header__notify-info">
+                      <span class="header__notify-name">Điện thoại Apple 128GB chính hãng</span>
+                      <span class="header__notify-price">20.000.000</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="header__notify-item">
+                  <a href="" class="header__notify-link">
+                    <img src="{% static 'images/iphone12.png' %}" alt="" class="header__notify-img">
+                    <div class="header__notify-info">
+                      <span class="header__notify-name">Điện thoại Apple 128GB chính hãng</span>
+                      <span class="header__notify-price">20.000.000</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="header__notify-item">
+                  <a href="" class="header__notify-link">
+                    <img src="{% static 'images/iphone12.png' %}" alt="" class="header__notify-img">
+                    <div class="header__notify-info">
+                      <span class="header__notify-name">Điện thoại Apple 128GB chính hãng sản xuất tại Trung quuoc</span>
+                      <span class="header__notify-price">20.000.000</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+              <footer class="header__notify-footer">
+                <a href="" class="header__notify-footer-btn">Xem tất cả</a>
+              </footer>
+            </div>
+          </li>
+          <li class="header__top-navigation-item"><a href="">Giới thiệu</a></li>
+          {% if request.user.is_staff %}
+          <li class="header__top-navigation-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+          {% endif %}
+          {% if user.is_authenticated %}
+          <li class="header__top-navigation-item header__top-navigation-separate" id='login-page'>
+            <a>Xin chào, {{ user.full_name|truncatechars:14 }}</a>
+            <div class="user-setting">
+              <ul class="setting-list">
+                <li class="setting-item">
+                  <a href="{% url 'account:update' %}">Thông tin tài khoản</a>
+                </li>
+                <li class="setting-item">
+                  <a href="{% url 'account:logout' %}" style="color: #414141">Đăng xuất</a>
+                </li>
+              </ul>
+            </div>
+          </li>  
+          {% else %}
+          <li class="header__top-navigation-item" id='login-page'><a href="{% url 'account:login' %}">Đăng nhập</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Header search -->
+    <div class="header-mid-nav">
+      <div class="container">
+        <div class="header__mid-navigation">
+          <div class="header__logo">
+            <a href="{% url 'shop:home' %}"><img src="{% static 'images/logo.png' %}" alt=""></a>
+          </div>
+          <div class="header__search">
+            <form action="{% url 'shop:search' %}" method='GET' class='search-form'>
+              <div class="header__search-input-wrap">
+                <input type="search" class="header__search-input" placeholder="Hôm nay bạn cần tìm gì? " name='q'>
+                <!-- <div class="header__search-history">
+                  <ul class="header__search-history-list">
+                    <li class="header__search-history-item">
+                      <div class="header__search-history-component">
+                        <img src="{% static 'images/iphone12.png' %}" alt="" class="header__search-history-item-img">
+                        <div class="header__search-history-item-text">
+                          <h5><strong>Điện thoại Iphone chính hãng</strong></h5>
+                          <p><strong>550000</strong></p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="header__search-history-item">
+                      <div class="header__search-history-component">
+                        <img src="{% static 'images/iphone12.png' %}" alt="" class="header__search-history-item-img">
+                        <div class="header__search-history-item-text">
+                          <h5><strong>Điện thoại Iphone chính hãng</strong></h5>
+                          <p><strong>550000</strong></p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="header__search-history-item">
+                      <div class="header__search-history-component">
+                        <img src="{% static 'images/iphone12.png' %}" alt="" class="header__search-history-item-img">
+                        <div class="header__search-history-item-text">
+                          <h5><strong>Điện thoại Iphone chính hãng</strong></h5>
+                          <p><strong>550000</strong></p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="header__search-history-item">
+                      <div class="header__search-history-component">
+                        <img src="{% static 'images/iphone12.png' %}" alt="" class="header__search-history-item-img">
+                        <div class="header__search-history-item-text">
+                          <h5><strong>Điện thoại Iphone chính hãng</strong></h5>
+                          <p><strong>550000</strong></p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="header__search-history-item">
+                      <div class="header__search-history-component">
+                        <img src="{% static 'images/iphone12.png' %}" alt="" class="header__search-history-item-img">
+                        <div class="header__search-history-item-text">
+                          <h5><strong>Điện thoại Iphone chính hãng</strong></h5>
+                          <p><strong>550000</strong></p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="header__search-history-item">
+                      <div class="header__search-history-component">
+                        <img src="{% static 'images/iphone12.png' %}" alt="" class="header__search-history-item-img">
+                        <div class="header__search-history-item-text">
+                          <h5><strong>Điện thoại Iphone chính hãng</strong></h5>
+                          <p><strong>550000</strong></p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div> -->
+              </div>
+              <button type="submit" class="header__search-btn" style="display: block">
+                <i class="header__search-btn-icon fas fa-search"></i>
+              </button>
+            </form>
+          </div>
+          <div class="header__check">
+            <a href="{% url 'shop:checkorder' %}">
+              <span class="header__check-icon"><i class="fas fa-shipping-fast"></i></span>
+              <div class="header__check-text">
+                Kiểm tra đơn hàng
+              </div>
+            </a>
+          </div>
+          <div class="header__cart">
+            <a href="{% url 'shop:cart' %}">
+              <i class="header__cart-icon fas fa-shopping-cart"></i>
+              <div class="header__cart-quantity">{{ total_items_cart }}</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav Bar -->
+    <nav class="header-footer-nav">
+      <div class="container">
+        <div class="header__footer-nav">
+          <ul class="header__nav-list">
+            <li class="header__nav-item dien-thoai">
+              <a href="/dien-thoai/" class="header__nav-dropbtn">
+                <i class="header__nav-item-icon fas fa-mobile-alt"></i>
+                <p class="header__nav-item-text">ĐIỆN THOẠI</p>
+              </a>
+              <div class="header__nav-sub-container">
+                <div class="header__nav-sub">
+                  <div class="header__nav-sub-menu">
+                    <h4><a href="">HÃNG SẢN XUẤT</a></h4>
+                    <ul class="header__nav-sub-display">
+                      {% for category in categories %}
+                      <li class="header__nav-sub-display-item">
+                        <a href="{{ category.get_category_link }}">{{ category.name|title }}</a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div class="header__nav-sub-menu">
+                    <h4><a href="">Mức giá</a></h4>
+                    <ul class="header__nav-sub-display">
+                      <li class="header__nav-sub-display-item">
+                        <a href="">Dưới 1 triệu</a>
+                      </li>
+                      <li class="header__nav-sub-display-item">
+                        <a href="">Từ 2 đến 3 triệu</a>
+                      </li>
+                      <li class="header__nav-sub-display-item">
+                        <a href="">Từ 3 đến 4 triệu</a>
+                      </li>
+                      <li class="header__nav-sub-display-item">
+                        <a href="">Từ 6 đến 8 triệu</a>
+                      </li>
+                      <li class="header__nav-sub-display-item">
+                        <a href="">Từ 15 đến 20 triệu</a>
+                      </li>
+                      <li class="header__nav-sub-display-item">
+                        <a href="">Trên 20 triệu</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="header__nav-item">
+              <a href="" class="header__nav-dropbtn">
+                <i class="header__nav-item-icon fab fa-apple"></i>
+                <p class="header__nav-item-text">APPLE</p>
+              </a>
+              <!-- <div class="header__nav-sub-container">
+
+              </div> -->
+            </li>
+            <li class="header__nav-item">
+              <a href="" class="header__nav-dropbtn">
+                <i class="header__nav-item-icon fab fa-blackberry"></i>
+                <p class="header__nav-item-text">BLACKBERRY</p>
+              </a>
+            </li>
+            <li class="header__nav-item">
+              <a href="" class="header__nav-dropbtn">
+                <i class="header__nav-item-icon fas fa-sim-card"></i>
+                <p class="header__nav-item-text">SIM THẺ</p>
+              </a>
+            </li>
+            <li class="header__nav-item">
+              <a href="" class="header__nav-dropbtn">
+                <i class="header__nav-item-icon fas fa-tools"></i>
+                <p class="header__nav-item-text">SỬA CHỮA</p>
+              </a>
+            </li>
+            <li class="header__nav-item">
+              <a href="{% url 'news:list_news' %}" class="header__nav-dropbtn">
+                <i class="header__nav-item-icon fas fa-newspaper"></i>
+                <p class="header__nav-item-text">TIN TỨC</p>
+              </a>
+            </li>
+            <li class="header__nav-item">
+              <a href="" class="header__nav-dropbtn">
+                <i class="header__nav-item-icon fas fa-fire"></i>
+                <p class="header__nav-item-text">CT KHUYẾN MẠI</p>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </nav>
+  </header>

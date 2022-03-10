@@ -1,0 +1,152 @@
+{% extends 'dashboard/db_version.html' %}
+{% block version %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div id="list-form">
+        {% include 'shop/alert.html' %}
+        <form class="form__create form-version" id="form-version" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form_version.media }}
+            <div class="form-item">
+                <label for="product-name">Danh mục</label>
+                {{ form_version.category }}
+                <span id="add_id_category" data-bs-target="#exampleModal" data-bs-toggle="modal" data-name="form-category"><i class="fas fa-plus"></i></span>
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="series">Series</label>
+                {{ form_version.series }}
+                <span id="add_id_series" data-bs-target="#exampleModal" data-bs-toggle="modal" data-name="form-series"><i class="fas fa-plus"></i></span>
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="name">Tên phiên bản</label>
+                {{ form_version.name }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="image">Image</label>
+                {{ form_version.image }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="description">Mô tả</label>
+                {{ form_version.description }}
+            </div>
+            <hr>
+        </form>
+    </div>
+    <input class="form-submit btn btn-primary submit-version" id="form-submit" type="button" value="Save">
+</div>
+<script>
+    // Submit Send Data in Form
+    const formVersion = document.getElementById("form-submit")
+    formVersion.addEventListener("click", function(){
+        const form = document.getElementsByClassName("form-version")
+        const fileField = document.getElementsByClassName('cls_image');
+        for (let i = 0; i < form.length; i++) {
+            let formData = new FormData()
+            formData.append('image', fileField[i].files[0]);
+            formData.append("category", document.getElementsByClassName('cls_category')[i].value)
+            formData.append("series", document.getElementsByClassName('cls_series')[i].value)
+            formData.append("name", document.getElementsByClassName('cls_name')[i].value)
+            formData.append("description", CKEDITOR.instances.id_description.getData())
+            fetch("/dashboard/versions/create-api/", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken':csrftoken,
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data)
+                window.location.reload()
+            })
+        }
+    })
+
+    // Handle add Series Form
+
+    const addSeries = document.getElementById("add_id_series")
+    addSeries.addEventListener("click", addSeriesForm)
+    function addSeriesForm(){
+        const dataSet = addSeries.dataset.name
+        var content = ""
+        if (document.querySelector(".table") != null) {
+            document.querySelector(".table").remove()
+        }
+
+        if (document.querySelector(".modal-body") != null) {
+            document.querySelector(".modal-body").innerHTML = content
+        }
+        if (dataSet == "form-series") {
+            content = `<form class="form__create" id="form-series" action="" method="POST" enctype="multipart/form-data">
+                        <div class="form-item">
+                            <label for="category-name">Danh mục</label>
+                            {{ form_series.category}}
+                        </div>
+                        <hr>
+                        <div class="form-item">
+                            <label for="series">Series</label>
+                            {{ form_series.name }}
+                        </div>
+                        <hr>
+                        <button class="form-submit btn btn-primary submit-variation" type="submit" value="add-series" name="save">Save</button>
+                    </form>
+                `
+        }
+        document.querySelector(".modal-body").innerHTML = content
+        addTocken()
+    }
+
+    const addCategory = document.getElementById("add_id_category")
+    addCategory.addEventListener("click", addCategoryForm)
+
+    function addCategoryForm() {
+        const dataSet = addCategory.dataset.name
+        var content = ""
+        if (document.querySelector(".table") != null) {
+            document.querySelector(".table").remove()
+        }
+
+        if (document.querySelector(".modal-body") != null) {
+            document.querySelector(".modal-body").innerHTML = content
+        }
+        if (dataSet == "form-category") {
+            content = `<form class="form__create" id="form-category" action="" method="POST" enctype="multipart/form-data">
+                        <div class="form-item">
+                            <label for="category-name">Tên danh mục</label>
+                            {{ form_category.name}}
+                        </div>
+                        <hr>
+                        <div class="form-item">
+                            <label for="series">Image</label>
+                            {{ form_category.image }}
+                        </div>
+                        <hr>
+                        <div class="form-item">
+                            <label for="series">Mô tả</label>
+                            {{ form_category.description }}
+                        </div>
+                        <hr>
+                        <button class="form-submit btn btn-primary submit-variation" type="submit" value="add-category" name="save">Save</button>
+                    </form>
+                `
+        }
+        document.querySelector(".modal-body").innerHTML = content
+        addTocken()
+    }
+
+
+    function addTocken() {
+        var form = document.getElementsByClassName("form__create")
+        var input = document.createElement('input')
+        input.type = 'hidden';
+        input.name = 'csrfmiddlewaretoken';
+        input.value = '{{ csrf_token }}';
+        for (let i = 0; i < form.length; i++) {
+            form[i].insertAdjacentElement("afterbegin",input)
+        }
+    }
+</script>
+{% endblock version %}

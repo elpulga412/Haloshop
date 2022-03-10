@@ -1,0 +1,324 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+{% block content %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <h2 class="header__order">QUẢN LÝ SẢN PHẨM</h2>
+    <button class="btn-add-product"><a href="{% url 'create_product' %}">Thêm sản phẩm</a></button>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Product Name</th>
+          <th scope="col">Capacity</th>
+          <th scope="col">Price</th>
+          <th scope="col">Active</th>
+          <th scope="col">DELETE</th>
+        </tr>
+      </thead>
+      <tbody class="content-table-product">
+        
+      </tbody>
+    </table>
+</div>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+  buildProduct()
+    function buildProduct() {
+      urlSearch()
+      const urlSearchParams = new URLSearchParams(window.location.search)
+      const params = Object.fromEntries(urlSearchParams.entries())
+      var url = ""
+      if (params.search != "undefined"){
+        url = `/api/products/?search=${params.search}`
+        if (typeof(params.search) === "undefined"){
+          url = `/api/products/`
+        }
+      }
+      fetch(url)
+      .then(res => res.json())
+      .then(function(data) {
+      var contentTableProduct = document.querySelector(".content-table-product")
+      const products = data
+      products.forEach(function(product) {
+        var name = "product"
+        const checkboxInput = handleCheckBox(product.is_active, name)
+        var url_product_update = `/dashboard/product/${product.id}`
+        content = ` <tr class="table-product" data-product="${product.id}">
+                      <td><a>${product.id}</a></td>
+                      <td><a href="${url_product_update}">${product.product_name}</a></td>
+                      <td>${product.capacity}</td>
+                      <td>${product.price}</td>
+                      <td>${checkboxInput}</td>
+                      <td><button type="button" class="del-item btn btn-danger" data-id="${product.id}"><i class="fa-solid fa-trash-can"></i></button></td>
+                    </tr>
+                  `
+        contentTableProduct.innerHTML += content
+      })
+
+      const activeProducts = document.getElementsByClassName("active-product")
+      const tableProduct = document.getElementsByClassName("table-product")
+      for (let i = 0; i < activeProducts.length; i++) {
+        activeProducts[i].addEventListener('click', function() {
+          const productId = tableProduct[i].dataset.product
+          fetch(`/api/products/${productId}/`, {
+            method: "PUT",
+            headers: {
+              'Content-type':'application/json',
+              'X-CSRFToken':csrftoken,
+            },
+            body: JSON.stringify({"is_active": activeProducts[i].checked})
+          })
+        })    
+      }
+
+      const btnDel = document.getElementsByClassName("del-item")
+      for (let i = 0; i < tableProduct.length; i++){  
+        // Handle Click not show Modal    
+        tableProduct[i].setAttribute("data-bs-target", "#exampleModal")
+        tableProduct[i].setAttribute("data-bs-toggle", "modal")
+        activeProducts[i].addEventListener("mouseout", function() {
+          tableProduct[i].setAttribute("data-bs-target", "#exampleModal")
+          tableProduct[i].setAttribute("data-bs-toggle", "modal")
+        })
+
+        btnDel[i].addEventListener("mouseout", function() {
+          tableProduct[i].setAttribute("data-bs-target", "#exampleModal")
+          tableProduct[i].setAttribute("data-bs-toggle", "modal")
+        })
+
+
+        activeProducts[i].addEventListener("mouseover", function(){
+          tableProduct[i].removeAttribute("data-bs-target", "#exampleModal")
+          tableProduct[i].removeAttribute("data-bs-toggle", "modal")
+        })
+
+        btnDel[i].addEventListener("mouseover", function(){
+          tableProduct[i].removeAttribute("data-bs-target", "#exampleModal")
+          tableProduct[i].removeAttribute("data-bs-toggle", "modal")
+        })
+        //--------------------------------------------------------------
+
+        // Handle Modal
+        tableProduct[i].addEventListener("click", function(){
+          var modalBody = document.querySelector(".modal-body")
+          var modalHeader= document.querySelector(".modal-header")
+          var modalFooter = document.querySelector(".modal-footer")
+          modalHeader.innerHTML = `<h5 class="modal-title" id="exampleModalLabel"></h5>`
+          modalBody.innerHTML = `<table class="table modal__list">
+                                    <thead id="table-header"></thead>
+                                    <tbody class="modal__item"></tbody>
+                                  </table>
+                                `
+          modalFooter.innerHTML = `
+                                    <button type="button" class="btn btn-primary" id="save-change">Save changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  `
+
+          var productId = tableProduct[i].dataset.product
+          const exampleModalLabel = document.getElementById("exampleModalLabel")
+          exampleModalLabel.innerHTML = `
+                                          <h3>Variation</h3>
+                                          <div style="position: absolute;top: 20px; right: 50px;"><button onclick="addVariation('${productId}')">Thêm màu sản phẩm</button><div>
+                                        `
+
+          const tableHeader = document.getElementById("table-header")
+          tableHeader.innerHTML = ` <tr>
+                                      <th scope="col"></th>
+                                      <th scope="col">Product</th>
+                                      <th scope="col">Image</th>
+                                      <th scope="col">Color</th>
+                                      <th scope="col">Stock</th>
+                                      <th scope="col">Is Available</th>
+                                      <th scope="col"> Delete</th>
+                                    </tr>
+                                  `
+          
+          var modalItem = document.querySelector(".modal__item")
+          modalItem.innerHTML = ""
+          var productListItem = detailProduct(products[i])
+          modalItem.innerHTML += productListItem
+
+          const rowItem = document.getElementsByClassName("row-item")
+          const colorInput = document.getElementsByClassName("color-input")
+          const stockInput = document.getElementsByClassName("stock-input")
+          const activeItem = document.getElementsByClassName("active-item")
+                       
+          for (let i = 0; i < rowItem.length; i++) {
+            document.getElementById("save-change").addEventListener("click", function(e){
+              e.preventDefault()
+
+              fetch(`/api/variations/${rowItem[i].dataset.item}/`, {
+                method:"PUT",
+                headers: {
+                  'Content-type':'application/json',
+                  'X-CSRFToken':csrftoken,
+                },
+                body: JSON.stringify({
+                                      "color": colorInput[i].value,
+                                      "stock": stockInput[i].value,
+                                      "is_available": activeItem[i].checked,
+                                    })
+              })
+              .then(res => res.json())
+              .then(result => {
+                console.log("Success: ", result)
+              })
+              .catch(error => {
+                console.error("Error")
+              })
+
+            })
+          }
+        })
+        // --------------------------------------------------------
+      }
+      // Remove Product
+      const btnDelProduct = document.getElementsByClassName("del-item")
+      for (let i = 0; i < btnDelProduct.length; i++){
+        btnDelProduct[i].addEventListener("click", function(){
+          const productId = btnDelProduct[i].dataset.id
+          const url_del_product = `/api/products/${productId}`
+          fetch (url_del_product, {
+            method: "DELETE",
+            headers: {
+                'Content-type':'application/json',
+                'X-CSRFToken':csrftoken,
+              },
+          }).then(() => {
+            alert("delete success")
+            window.location.reload()
+          }).catch((error) => alert("delete not success"))
+        })
+      }
+      // -------------------------------------------
+    })
+    
+    }
+    function detailProduct(product) {
+      if (document.getElementById("save-change") != null) {
+        document.getElementById("save-change").remove()
+      }
+      const btnElem = `<button type="button" class="btn btn-primary" id="save-change">Save changes</button>`
+      const modalFooter = document.querySelector(".modal-footer")
+      modalFooter.insertAdjacentHTML("afterbegin", btnElem)
+      var countItem = 0 
+      var item = ""
+      var productListItem = ""
+      for (let i = 0; i < product.variation.length; i++) {
+        var name = "item"
+        var checkBoxInput = handleCheckBox(product.variation[i].is_available, name)
+        countItem = (i + 1)
+        item = ` <tr class="row-item" data-item=${product.variation[i].id}>
+                    <th scope="row">${countItem}</th>
+                    <td>${product.product_name}</td>
+                    <td style="padding: 0px"><img class="image-input" style="height: 70px" src=${product.variation[i].image}/>
+                    </td>
+                    <td><input type="text" class="color-input" name="color" value='${product.variation[i].color}'></td>
+                    <td><input type="number" class="stock-input" name="quantity" min="0" max="100" value=${product.variation[i].stock}></td>
+                    <td>${checkBoxInput}</td>
+                    <td><button type="button" class="del-variation btn btn-danger" data-id="${product.variation[i].id}" onclick="delVariation('${product.variation[i].id}')"><i class="fa-solid fa-trash-can"></i></button></td>
+                </tr>
+              `
+        productListItem += item
+      }
+      return productListItem
+    }
+  
+    function handleCheckBox(instance, name) {
+      var checkboxInput = ""
+        if (instance == true) {
+          checkboxInput = `<input type="checkbox" class="active-${name}" checked>`
+        } else if (instance == false) {
+          var checkboxInput = `<input type="checkbox" class="active-${name}">`
+        }
+      return checkboxInput
+    }
+
+    function addVariation(productId) {
+      console.log(productId)
+      exampleModalLabel.innerHTML = `<h3>Add Variation</h3>`
+      var modalBody = document.querySelector(".modal-body")
+      modalBody.innerHTML = `<form class="form__create form-version" id="form-version" action="" method="POST" enctype="multipart/form-data">
+                              <div class="form-item">
+                                  <label for="id_product">Product</label>
+                                  {{ form_variation.product }}
+                              </div>
+                              <hr>
+                              <div class="form-item">
+                                  <label for="id_color">Color</label>
+                                  {{ form_variation.color }}
+                              </div>
+                              <hr>
+                              <div class="form-item">
+                                  <label for="id_image">Image</label>
+                                  {{ form_variation.image }}
+                              </div>
+                              <hr>
+                              <div class="form-item">
+                                  <label for="id_stock">Stock</label>
+                                  {{ form_variation.stock }}
+                              </div>
+                              <hr>
+                              <div class="form-item">
+                                  <label for="id_is_description">Available</label>
+                                  {{ form_variation.is_available }}
+                              </div>
+                              <hr>
+                          </form>
+                          `
+      var modalFooter = document.querySelector(".modal-footer")
+      modalFooter.innerHTML = ""
+      modalFooter.innerHTML = `
+                                <button type="button" class="btn btn-primary" id="add-variation">Save</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="modalClose()">Close</button>
+                              `
+      document.querySelector("#id_product").value = productId
+      
+      document.getElementById("add-variation").addEventListener("click", function(){
+        const formData = new FormData()
+        const fileField = document.querySelector('input[type="file"]')
+        formData.append('image', fileField.files[0]);
+        formData.append('color', document.querySelector('#id_color').value)
+        formData.append('product', document.querySelector('#id_product').value)
+        formData.append('stock', document.querySelector('#id_stock').value)
+        formData.append('is_available', document.querySelector('#id_is_available').value)
+
+        fetch("/api/variations/", {
+          method : "POST",
+          headers: {
+                  'X-CSRFToken':csrftoken,
+                },
+          body: formData
+        }).then(res => res.json())
+        .then(alert('Add variation success'))
+        .catch((error) => {
+          alert("Add variation not success");
+        })   
+      })
+
+    }
+
+
+    function modalClose() {
+      document.querySelector(".modal-body").innerHTML = ""
+      document.querySelector(".modal-footer").innerHTML = ""
+      document.querySelector(".modal-header").innerHTML = ""
+    }
+
+    function delVariation(variationId) {
+      var url_del_variation = `/api/variations/${variationId}`
+      fetch (url_del_variation, {
+        method: "DELETE",
+        headers: {
+                'Content-type':'application/json',
+                'X-CSRFToken':csrftoken,
+              },
+      }).then(() => {
+        alert("delete success")
+        window.location.reload()
+      })
+      .catch(error => alert("delete not "))
+    }
+    
+</script>
+{% endblock content %}

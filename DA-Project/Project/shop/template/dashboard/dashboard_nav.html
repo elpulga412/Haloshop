@@ -1,0 +1,70 @@
+
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+    <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'dashboard' %} active {% endif %}" aria-current="page" href="{% url "dashboard" %}">
+            <span data-feather="home"></span>
+            Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'order' %} active {% endif %}" href="{% url 'dashboard_order' %}">
+            <span data-feather="file"></span>
+            Orders
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'product' %} active {% endif %}" href="{% url 'dashboard_product' %}">
+            <span data-feather="shopping-cart"></span>
+            Products
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'versions' %} active {% endif %}" href="{% url 'dashboard_versions' %}">
+            <span data-feather="file"></span>
+            Versions
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'series' %} active {% endif %}" href="{% url 'dashboard_series' %}">
+            <span data-feather="file"></span>
+            Series
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'categories' %} active {% endif %}" href="{% url 'dashboard_category' %}">
+            <span data-feather="file"></span>
+            Categories
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'customer' %} active {% endif %}" href="{% url 'dashboard_customer' %}">
+            <span data-feather="users"></span>
+            Customers
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'news' %} active {% endif %}" href="{% url 'dashboard_news' %}">
+            <i class="fa-solid fa-newspaper"></i>
+            News
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'report' %} active {% endif %}" href="#">
+            <span data-feather="bar-chart-2"></span>
+            Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if nav == 'comments' %} active {% endif %}" href="{% url 'dashboard_comments' %}">
+            <span><i class="fa-solid fa-comment"></i></span>
+            Comments
+            </a>
+        </li>
+        
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+    </div>
+</nav>

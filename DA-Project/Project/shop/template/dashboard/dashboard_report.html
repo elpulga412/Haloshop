@@ -1,0 +1,117 @@
+{% extends 'dashboard/dashboard.html' %}
+{% load static %}
+{% block content %}
+<script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <h2>Report</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <div class="col">
+        <div class="card shadow-sm">
+          <h4 style="padding: 10px; text-align: center; margin: 0px;">Current orders by week</h4>
+          <hr style="margin: 0px;">
+          <div class="card-body">
+            <p class="card-text" id="total-orders" style="font-size: 34px; text-align: center;">{{ orders_by_week }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card shadow-sm">
+          <h4 style="padding: 10px; text-align: center; margin: 0px;">Current order by month</h4>
+          <hr style="margin: 0px;">
+          <div class="card-body">
+            <p class="card-text" id="order-delivered" style="font-size: 34px; text-align: center;">{{ orders_by_month }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card shadow-sm">
+          <h4 style="padding: 10px; text-align: center; margin: 0px;">Current orders by year</h4>
+          <hr style="margin: 0px;">
+          <div class="card-body">
+            <p class="card-text" id="order-pending" style="font-size: 34px; text-align: center;">{{ orders_by_year }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="orderByWeek"></div>
+    <div id="orderByMonth"></div>
+</main>
+<script>
+    fetch("/dashboard/orderbyweek/")
+    .then(res => res.json())
+    .then(data => {
+        const ordersByWeek = data
+        var days = []
+        var qty = []
+        ordersByWeek.forEach(function(orderByWeek, index){
+            console.log(orderByWeek)
+            days.push(orderByWeek.day)
+            qty.push(orderByWeek.quantity)
+        })
+
+
+        var chartData = {
+        title: {
+            text: "Thống kê tuần"
+        },
+        type: 'bar',
+        "scale-x": {
+            "values": days
+        },
+        series: [
+            {
+            values: qty
+            }
+        ]
+        }
+        zingchart.render({
+        id: 'orderByWeek',
+        data: chartData,
+        height: "70%",
+      width: '70%', 
+        });
+
+    })
+
+
+    fetch("/dashboard/orderbymonth/")
+    .then(res => res.json())
+    .then(data => {
+
+        const ordersByMonth = data
+        var months = []
+        var qty = []
+        ordersByMonth.forEach(function(orderByMonth, index){
+            months.push(orderByMonth.month)
+            qty.push(orderByMonth.quantity)
+        })
+
+
+        var chartData = {
+        title: {
+            text: "Thống kê tháng"
+        },
+        type: 'bar',
+        "scale-x": {
+            "values": months
+        },
+        series: [
+            {
+            values: qty
+            }
+        ]
+        }
+        zingchart.render({
+        id: 'orderByMonth',
+        data: chartData,
+        height: "70%",
+        width: '70%', 
+        });
+
+
+
+    })
+
+  </script>
+{% endblock content %}

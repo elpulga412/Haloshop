@@ -1,0 +1,85 @@
+{% extends 'dashboard/db_series.html' %}
+{% load static %}
+{% block series %}
+
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <h2 class="header__order">Manage Series</h2>
+    <a href="{% url 'db_create_series' %}"><button style="float: right;">Add Series</button></a>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Categories</th>
+          <th scope="col">Date Create</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody class="series__content-table">
+
+      </tbody>
+    </table>
+</div>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+    listSeriesData()
+  function listSeriesData() {
+    urlSearch()
+    const urlSearchParams = new URLSearchParams(window.location.search)
+    const params = Object.fromEntries(urlSearchParams.entries())
+    var url = ""
+    if (params.search != "undefined"){
+      url = `/api/series/?search=${params.search}`
+      if (typeof(params.search) === "undefined"){
+        url = `/api/series/`
+      }
+    }
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const seriesList = data
+      var seriesContentTable = document.querySelector(".series__content-table")
+      seriesContentTable.innerHTML = ""
+      seriesList.forEach(function(seriesItem){
+          var date = new Date(seriesItem.create_at)
+          var time = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+          var url_version_update = `/dashboard/series/${seriesItem.id}/`
+          seriesItemHTML = ` <tr class="table list__series-table-item">
+                                  <td><a>${seriesItem.id}<a></td>
+                                  <td><a href="${url_version_update}">${seriesItem.name}<a></td>
+                                  <td>${seriesItem.category.name}</td>
+                                  <td>${time}</td>
+                                  <td><button type="button" class="del-item btn btn-danger" data-id="${seriesItem.id}"><i class="fa-solid fa-trash-can"></i></button></td>
+                              </tr>
+                              `
+          seriesContentTable.innerHTML += seriesItemHTML
+      })
+      // delete
+      deleteSeries(data)
+
+    })
+  }
+
+
+    function deleteSeries(data) {
+        const delItem = document.getElementsByClassName("del-item")
+        for (let i = 0; i < delItem.length; i++) {
+          delItem[i].addEventListener("click", function(){
+            var seriesId = delItem[i].dataset.id
+            fetch(`/api/series/${seriesId}`, {
+              method: "DELETE",
+              headers: {
+                'Content-type':'application/json',
+                'X-CSRFToken':csrftoken,
+              },
+            })
+            .then(() => {
+                alert("Delete Success")
+                window.location.reload()              
+            })
+            .catch((error) => alert("Delete not Success"))         
+          })
+        }      
+    }
+</script>
+{% endblock series %}

@@ -1,0 +1,39 @@
+{% extends 'dashboard/db_variation.html' %}
+{% block variation %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div id="list-form">
+        {% include 'shop/alert.html' %}
+        <form class="form__create form-version" id="form-version" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-item">
+                <label for="product-name">Tên sản phẩm</label>
+                {{ form.product }}
+                <span id="add_id_product" data-bs-target="#exampleModal" data-bs-toggle="modal" data-name="form-category"><i class="fas fa-plus"></i></span>
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="series">Màu</label>
+                {{ form.color }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="name">Image</label>
+                {{ form.image }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="image">Kho</label>
+                {{ form.stock }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="description">Available</label>
+                {{ form.is_available }}
+            </div>
+            <hr>
+        </form>
+    </div>
+    <div id="plus-version" onclick="addFormVersion()"><i class="fa-solid fa-plus"></i> Thêm</div>
+    <input class="form-submit btn btn-primary submit-version" id="form-submit" type="button" value="Save">
+</div>
+{% endblock variation %}

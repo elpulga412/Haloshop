@@ -1,0 +1,113 @@
+{% extends 'shop/base.html' %}
+
+{% load static %}
+{% block content %}
+<div class="cart">
+    <div class="container">
+        <div class="row">
+            {% if my_items|length > 0 %}
+            
+            <h2>Giỏ hàng</h2>
+            <div class="col-lg-12">
+                <table class="table">
+                    <thead class="table-light">
+                        <tr class="row-table">
+                            <th scope="col"></th>
+                            <th scope="col">Tên sản phẩm</th>
+                            <th scope="col">Giá</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Tổng</th>
+                        </tr>
+                    </thead>
+                    {% comment %} Người dùng đã đăng nhập {% endcomment %}
+                    {% if request.user.is_authenticated %}
+                    <thead class="table-light">
+                        {% for my_item in my_items %}
+                        <tr class="row-table">
+                            <th scope="col" style="width: 100%; padding: 0px; display: flex">
+                                <img class="col-img" src="{{ my_item.product.imageURL }}">
+                                <div class="col-img-option">
+                                    <div style='font-weight: 400;'>Phiên bản: {{ my_item.product.capacity }}</div>
+                                    <div style='font-weight: 400;'>Màu: {{ my_item.color }}</div>
+                                <div>
+                                
+                            </th>
+                            <th scope="col" style="vertical-align: middle">
+                                <span style='font-weight: 400;'>{{ my_item.product.version.name }}</span>
+                            </th>
+                            <th scope="col" style="vertical-align: middle">
+                                <span style='font-weight: 400;'>{{ my_item.product.price|floatformat:'-3g' }}</span>
+                            </th>
+                            <th scope="col" style="vertical-align: middle">
+                                <span class="quantity" style='font-weight: 400;'>x{{ my_item.quantity }}</span>
+                                <span class="quantity-arrow" style='font-weight: 400;'>
+                                    <div class="update-cart" data-product='{{ my_item.product.id }}' data-color='{{ my_item.color }}' data-act='add'><i class="arrow fas fa-caret-up"></i></div>
+                                    <div class="update-cart" data-product='{{ my_item.product.id }}' data-color='{{ my_item.color }}' data-act='remove'><i class="arrow fas fa-caret-down"></i></div>
+                                </span>
+                            </th>
+                            <th scope="col" style="vertical-align: middle; font-weight: 400;">{{ my_item.get_each_total|floatformat:'-3g' }}</th>
+                        </tr>
+                        {% endfor %}
+                    </thead>
+
+                    <thead class="table-light">
+                        <tr class="row-table table-info">
+                            <th scope="col" style="width: 20%;">Tổng</th>
+                            <th scope="col" style="width: 30%;"></th>
+                            <th scope="col" style="width: 15%;"></th>
+                            <th scope="col" style="width: 10%;"></th>
+                            <th scope="col" style="width: 25%; vertical-align: baseline;">{{ my_cart.get_total_pay|floatformat:'-3g' }}</th>
+                        </tr>
+                    </thead>
+                    {% comment %} Người dùng chưa đăng nhập {% endcomment %}
+                    {% else %}
+                    <thead class="table-light">
+                        {% for my_item in my_items %}
+                        <tr class="row-table">
+                            <th scope="col" style="width: 100%; padding: 0px; display: flex">
+                                <img class="col-img" src="{{ my_item.product.image }}">
+                                <div class="col-img-option">
+                                    <div style='font-weight: 400;'>Phiên bản: {{ my_item.product.capacity }}</div>
+                                    <div style='font-weight: 400;'>Màu: {{ my_item.color }}</div>
+                                <div>
+                                
+                            </th>
+                            <th scope="col" style="vertical-align: middle">
+                                <span style='font-weight: 400;'>{{ my_item.product.name }}</span>
+                            </th>
+                            <th scope="col" style="vertical-align: middle">
+                                <span style='font-weight: 400;'>{{ my_item.product.price|floatformat:'-3g' }}</span>
+                            </th>
+                            <th scope="col" style="vertical-align: middle">
+                                <span class="quantity" style='font-weight: 400;'>x{{ my_item.quantity }}</span>
+                                <span class="quantity-arrow" style='font-weight: 400;'>
+                                    <div class="update-cart" data-product='{{ my_item.product.id }}' data-color='{{ my_item.color }}' data-act='add'><i class="arrow fas fa-caret-up"></i></div>
+                                    <div class="update-cart" data-product='{{ my_item.product.id }}' data-color='{{ my_item.color }}' data-act='remove'><i class="arrow fas fa-caret-down"></i></div>
+                                </span>
+                            </th>
+                            <th scope="col" style="vertical-align: middle; font-weight: 400;">{{ my_item.get_total_per_product|floatformat:'-3g' }}</th>
+                        </tr>
+                        {% endfor %}
+                    </thead>
+
+                    <thead class="table-light">
+                        <tr class="row-table table-info">
+                            <th scope="col" style="width: 20%;">Tổng</th>
+                            <th scope="col" style="width: 30%;"></th>
+                            <th scope="col" style="width: 15%;"></th>
+                            <th scope="col" style="width: 10%;"></th>
+                            <th scope="col" style="width: 25%; vertical-align: baseline;">{{ my_order.|floatformat:'-3g' }}</th>
+                        </tr>
+                    </thead>
+                    {% endif %}
+                </table>
+                <a class="btn btn-success" href="{% url 'shop:checkout' %}" style="width: 30%; float: right">Đặt hàng</a>
+            </div>
+            {% else %}
+            <h2>Chưa có sản phẩm nào trong giỏ hàng</h2>
+            <span><a href="{% url 'shop:category:store' %}" class="btn btn-link">&#10550;Tiếp tục mua hàng</a></span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

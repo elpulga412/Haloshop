@@ -1,0 +1,82 @@
+{% extends 'dashboard/db_version.html' %}
+{% load static %}
+{% block version %}
+
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <h2 class="header__order">Manage Version</h2>
+    <a href="{% url 'db_create_version' %}"><button style="float: right;">Add Version</button></a>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col"></th>
+          <th scope="col">Version</th>
+          <th scope="col">Series</th>
+          <th scope="col">Time</th>
+          <th scope="col">DELETE</th>
+        </tr>
+      </thead>
+      <tbody class="version__content-table">
+
+      </tbody>
+    </table>
+</div>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+  listVersionData()
+  function listVersionData() {
+    urlSearch()
+    const urlSearchParams = new URLSearchParams(window.location.search)
+    const params = Object.fromEntries(urlSearchParams.entries())
+    var url = ""
+    if (params.search != "undefined"){
+      url = `/api/versions/?search=${params.search}`
+      if (typeof(params.search) === "undefined"){
+        url = `/api/versions/`
+      }
+    }
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const versionList = data
+      var versionContentTable = document.querySelector(".version__content-table")
+      versionContentTable.innerHTML = ""
+      versionList.forEach(function(versionItem){
+          var date = new Date(versionItem.updated_at)
+          var time = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+          var url_version_update = `/dashboard/versions/${versionItem.id}/`
+          versionItemHTML = ` <tr class="table list__version-table-item">
+                                  <td><a>${versionItem.id}<a></td>
+                                  <td><img src="${versionItem.image}" style="height: 40px"></td>
+                                  <td><a href="${url_version_update}">${versionItem.name}<a></td>
+                                  <td>${versionItem.series.name}</td>
+                                  <td>${time}</td>
+                                  <td><button type="button" class="del-item btn btn-danger" data-id="${versionItem.id}"><i class="fa-solid fa-trash-can"></i></button></td>
+                              </tr>
+                              `
+          versionContentTable.innerHTML += versionItemHTML
+      })
+      // delete
+      deleteVersion(data)
+      function deleteVersion(data) {
+        const delItem = document.getElementsByClassName("del-item")
+        for (let i = 0; i < delItem.length; i++) {
+          delItem[i].addEventListener("click", function(){
+            var versionId = delItem[i].dataset.id
+            fetch(`/api/versions/${versionId}`, {
+              method: "DELETE",
+              headers: {
+                'Content-type':'application/json',
+                'X-CSRFToken':csrftoken,
+              },
+            })
+            .then(listVersionData())          
+          })
+        }      
+      }
+    })
+
+  }
+</script>
+
+{% endblock version %}

@@ -1,0 +1,85 @@
+{% extends 'dashboard/db_customer.html' %}
+{% load static %}
+{% block customer %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <h2 class="header__order">Manage Customer</h2>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Email</th>
+          <th scope="col">Full name</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Address</th>
+          <th scope="col">Last login</th>
+          <th scope="col">Active</th>
+          <th scope="col">Staff</th>
+        </tr>
+      </thead>
+      <tbody class="customer__content-table">
+
+      </tbody>
+    </table>
+</div>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+    listCustomerData()
+  function listCustomerData() {
+    urlSearch()
+    const urlSearchParams = new URLSearchParams(window.location.search)
+    const params = Object.fromEntries(urlSearchParams.entries())
+    var url = ""
+    if (params.search != "undefined"){
+        url = `/api/customer/?search=${params.search}`
+        if (typeof(params.search) === "undefined"){
+        url = `/api/customer/`
+        }
+    }
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const customerList = data
+      var customerContentTable = document.querySelector(".customer__content-table")
+      customerContentTable.innerHTML = ""
+      customerList.forEach(function(customerItem){
+          var date = new Date(customerItem.last_login)
+          var time = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+          var checkedIsActive = `${customerItem.is_active}`
+          var inputIsActive = ``
+          if (checkedIsActive == "true") {
+            inputIsActive = `<input type="checkbox" id="id_is_active" name="is_active" checked disabled="disabled">`
+          }
+          else {
+            inputIsActive = `<input type="checkbox" id="id_is_active" name="is_active" disabled="disabled">`
+          }
+
+          var checkIsStaff = `${customerItem.is_staff}`
+          var inputIsStaff = ``
+          if (checkIsStaff == "true") {
+            inputIsStaff = `<input type="checkbox" id="id_is_staff" name="is_staff" checked disabled="disabled">`
+          }
+          else {
+            inputIsStaff = `<input type="checkbox" id="id_is_staff" name="is_staff" disabled="disabled">`
+          }
+
+          customerItemHTML = ` <tr class="table list__customer-table-item">
+                                    <td><a>${customerItem.id}<a></td>
+                                    <td>${customerItem.email}</td>
+                                    <td>${customerItem.full_name}</td>
+                                    <td>${customerItem.phone}</td>
+                                    <td>${customerItem.address}</td>
+                                    <td>${time}</td>
+                                    <td>${inputIsActive}</td>   
+                                    <td>${inputIsStaff}</td>
+                                    <td>${time}</td>
+                              </tr>
+                              `
+          customerContentTable.innerHTML += customerItemHTML
+      })
+
+    })
+  }
+</script>
+
+
+{% endblock customer %}

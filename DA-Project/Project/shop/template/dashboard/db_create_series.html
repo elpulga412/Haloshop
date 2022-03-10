@@ -1,0 +1,45 @@
+{% extends 'dashboard/db_series.html' %}
+{% block series %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div id="list-form">
+        <h3>Add Series</h3>
+        {% include 'shop/alert.html' %}
+        <form class="form__create form-series" id="form-series" action="" method="POST" enctype="multipart/form-data">
+            <div class="form-item">
+                <label for="id_category">Category</label>
+                {{ form_series.category }}
+                <span id="add_id_category" data-bs-target="#exampleModal" data-bs-toggle="modal" data-name="form-category"><i class="fas fa-plus"></i></span>
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="id_name">Series name</label>
+                {{ form_series.name }}
+            </div>
+            <hr>
+        </form>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'dashboard_series' %}">Back</a>
+    <input class="form-submit btn btn-primary submit-series" id="form-submit" type="button" value="Save" onclick="addSeries()">
+</div>
+<script>
+    // ADD Series
+
+    function addSeries(){
+        
+        const cateogryValue = document.getElementById("id_category").value
+        const nameValue = document.getElementById("id_name").value
+        fetch('/api/series/', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken':csrftoken,
+            },
+            body: JSON.stringify({ category: cateogryValue, name:nameValue })
+        }).then(res => res.json())
+        .then(() => {
+            alert("Add Success")
+            window.location.reload()
+        })
+    }
+</script>
+{% endblock series %}

@@ -1,0 +1,27 @@
+{% load static %}
+<div class="modal" id='offerModalForm'>
+    <div class="modal__overlay"></div>
+    <div class="model__body">
+      
+        
+      Authen Form
+      <div class="auth-form">
+        <div class="auth-form__container">
+          <div class="auth-form__img">
+            <img src="{% static 'images/login-bg.png' %}" alt="">
+          </div>
+          <i class="fas fa-times-circle close-form" onclick="closeModal()"></i>
+          {% comment %} FORM LOGIN {% endcomment %}
+          {% include 'account/login-modal.html' %}
+          
+          {% comment %} FORM REGISTER  {% endcomment %}
+          {% include 'account/register-modal.html' %}
+        </div>
+      </div>
+
+        {% comment %} Configuration detail  
+      {% include 'shop/configuration.html' %} {% endcomment %}
+
+
+    </div>
+</div>

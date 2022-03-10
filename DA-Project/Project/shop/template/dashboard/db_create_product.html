@@ -1,0 +1,92 @@
+{% extends 'dashboard/dashboard.html' %}
+
+{% block content %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="update_product-container">
+        <h3>Thêm sản phẩm</h3>
+        <form class="form__create" action="" method="POST" enctype="multipart/form-data">
+            <div class="form-item">
+                <label for="product-name">Tên sản phẩm:</label>
+                {{ form_product.version }}
+                <span id="add_id_version" data-bs-target="#exampleModal" data-bs-toggle="modal"><i class="fas fa-plus"></i></span>
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="capacity">Dung lượng:</label>
+                {{ form_product.capacity }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="price">Giá:</label>
+                {{ form_product.price }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="active">Active:</label>
+                {{ form_product.is_active }}
+            </div>
+            <hr>
+            <button class="form-submit btn btn-primary" type="submit" value="add-product" name="save">Save</button>
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById("id_version").required = true
+    document.getElementById("id_price").required = true
+    addTocken()
+    const addVersion = document.getElementById("add_id_version")
+    addVersion.addEventListener("click", addVersionForm)
+
+
+    function addVersionForm(){
+        var page = `{{ title }}`
+        if (document.querySelector(".table") != null) {
+            document.querySelector(".table").remove()
+        }
+        content = `<form class="form__create" id="form-version" action="" method="POST" enctype="multipart/form-data">
+                        <div class="form-item">
+                            <label for="product-name">Tên hãng sản xuất</label>
+                            {{ form_version.category}}
+                            <span id="add_id_version" data-bs-target="#exampleModal" data-bs-toggle="modal"><i class="fas fa-plus"></i></span>
+                        </div>
+                        <hr>
+                        <div class="form-item">
+                            <label for="series">Series</label>
+                            {{ form_version.series }}
+                        </div>
+                        <hr>
+                        <div class="form-item">
+                            <label for="name">Tên phiên bản</label>
+                            {{ form_version.name }}
+                        </div>
+                        <hr>
+                        <div class="form-item">
+                            <label for="image">Image</label>
+                            {{ form_version.image }}
+                        </div>
+                        <hr>
+                        <div class="form-item">
+                            <label for="description">Mô tả</label>
+                            {{ form_version.description }}
+                        </div>
+                        <hr>
+                        <button class="form-submit btn btn-primary submit-variation" type="submit" value="add-version" name="save">Save</button>
+                    </form>
+                `
+        document.querySelector(".modal-body").innerHTML = content
+        addTocken()  
+    }
+
+
+    function addTocken() {
+        var form = document.getElementsByClassName("form__create")
+        var input = document.createElement('input')
+        input.type = 'hidden';
+        input.name = 'csrfmiddlewaretoken';
+        input.value = '{{ csrf_token }}';
+        for (let i = 0; i < form.length; i++) {
+            form[i].insertAdjacentElement("afterbegin",input)
+        }
+    }
+</script>
+{% endblock content %}

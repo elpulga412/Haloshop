@@ -1,0 +1,42 @@
+{% extends 'dashboard/db_category.html' %}
+{% load static %}
+
+{% block category %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <h2 class="header__order">Manage Reviews</h2>
+    <a href="{% url 'db_create_category' %}"><button style="float: right;">Add Category</button></a>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Email</th>
+          <th scope="col">Subjects</th>
+          <th scope="col">Comments</th>
+        </tr>
+      </thead>
+      <tbody class="category__content-table">
+        {% for comment in comments %}
+        <tr class="table list__comments-table-item">
+            <td>{{ comment.id }}</td>
+            <td>{{ comment.user}}</td>
+            <td><a href="{% url 'db_detail_review_rating' comment.id %}" class="subject-list" {% if comment.status == False %} style="color: red;" {% endif %} onclick="readComment(this)" data-id="{{ comment.id }}">{{ comment.subject|truncatechars:20 }}{% if comment.status == False %} (New) {% endif %}</a></td>
+            <td>{{ comment.review|truncatechars:40 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+<script>
+  function readComment(e){
+    var commentId = e.dataset.id
+    fetch(`/api/reviews/${commentId}/`, {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken':csrftoken,
+      },
+      body: JSON.stringify({id:commentId, status: 'True'})
+    })
+  }
+</script>
+{% endblock category %}

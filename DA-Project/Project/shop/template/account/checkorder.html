@@ -1,0 +1,36 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+{% include 'shop/alert.html' %}
+<div class="check-order">
+    <div class="container">
+        <div class="check__order-container">
+            <h2>Kiểm tra đơn hàng: {{ request.user }}</h2>
+            <table class="table">
+                {% comment %} Người dùng đã đăng nhập {% endcomment %}
+                <thead class="table-light">
+                    {% for order in orders %}
+                    <tr class="row-table">
+                        <th scope="col" style="vertical-align: middle">
+                            <span style='font-weight: 400;'>{{ order.transaction_id }}</span>
+                        </th>
+                        <th scope="col" style="vertical-align: middle">
+                            {% for item in order.orderitem_set.all %}
+                            <p style='font-weight: 400; margin-bottom: 0px'>{{ item.product }}</p>
+                            {% endfor %}
+                        </th>
+                        <th scope="col" style="vertical-align: middle; font-weight: 400;">
+                            <span>{{ order.updated_at|date:'Y-m-d' }}</span>
+                        </th>
+                        <th scope="col" style="vertical-align: middle; font-weight: 400;">
+                            <span>{{ order.status }}</span>
+                        </th>
+                    </tr>
+                    {% endfor %}
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

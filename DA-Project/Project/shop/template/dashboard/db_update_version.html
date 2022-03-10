@@ -1,0 +1,42 @@
+{% extends 'dashboard/db_version.html' %}
+{% block version %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div id="list-form">
+        <h3>Cập nhật phiên bản điện thoại</h3>
+        {% include 'shop/alert.html' %}
+        <form class="form__create" id="form-version" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            <div style="display: grid;">
+                <div class="form-item">
+                    <label for="product-name">Danh mục</label>
+                    {{ form.category }}
+                </div>
+                <hr>
+                <div class="form-item">
+                    <label for="series">Series</label>
+                    {{ form.series }}
+                </div>
+                <hr>
+                <div class="form-item">
+                    <label for="name">Tên phiên bản</label>
+                    {{ form.name }}
+                </div>
+                <hr>
+                <div class="form-item" style="display: flex;">
+                    <div style="margin: 0px"><label for="image" style="display: block;">Image</label></div>
+                    <div class="chil-form-item">{{ form.image }}</div>
+                </div>
+                <hr>
+                <div class="form-item">
+                    <label for="description">Mô tả</label>
+                    {{ form.description }}
+                </div>
+                <hr>
+            </div>
+            <button class="form-submit btn btn-primary submit-variation" type="submit" value="add-series" name="save">Save</button>
+            <a class="btn btn-secondary" href="{% url 'dashboard_versions' %}" role="button">Back</a>
+        </form>
+    </div>
+</div>
+{% endblock version %}

@@ -1,0 +1,27 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<main class="container">
+    <div class="news_detail">
+        <h1 id="news_title">{{ news.title }}</h1>
+        <p class="text-muted" style="text-align: center;">{{ news.updated_at }}</p>
+        <div id="news_content">{{ news.content|safe }}</div>
+    </div>
+</main>
+<script>
+    const imgDetail = document.querySelectorAll("#news_content img")
+    for (let i = 0; i < imgDetail.length; i++) {
+        const imgElement = imgDetail[i].parentNode
+        if (imgElement.tagName === "A") {
+            try {
+                imgElement.parentNode.style.textAlign = "center"
+            }
+            catch {
+                
+            }
+        } else {
+            imgElement.style.textAlign = "center"
+        }
+    }
+</script>
+{% endblock content %}

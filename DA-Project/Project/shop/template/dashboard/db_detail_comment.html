@@ -1,0 +1,30 @@
+{% extends 'dashboard/db_version.html' %}
+{% block version %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div id="list-form">
+        <form class="form__create form-version" id="form-version" action="" method="POST" enctype="multipart/form-data">
+            <div class="form-item">
+                <label for="">Version</label>
+                {{ form.version }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="">User</label>
+                {{ form.user }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="">Subject</label>
+                {{ form.subject }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="description">Review</label>
+                {{ form.review }}
+            </div>
+            <hr>
+        </form>
+    </div>
+    <a href="{% url 'dashboard_comments' %}"><button class="form-submit btn btn-secondary submit-version" type="button">Back</button></a>
+</div>
+{% endblock version %}

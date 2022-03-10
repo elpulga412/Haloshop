@@ -1,0 +1,32 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.dashboard, name="dashboard"),
+    path('order/', views.dashboard_order, name="dashboard_order"),
+    path('product/', views.dashboard_product, name="dashboard_product"),
+    path('product/create/', views.create_product, name="create_product"),
+    path('product/variation/', views.create_variation, name="create_variation"),
+    path('product/<int:pk>/', views.update_product, name="db_update_product"),
+    path('versions/', views.list_versions, name="dashboard_versions"),
+    path('versions/create/', views.create_version, name="db_create_version"),
+    path('versions/create-api/', views.create_version_api, name="db_create_version_api"),
+    path('versions/<int:pk>/', views.update_version, name="db_update_version"),
+    path('series/', views.list_series, name="dashboard_series"),
+    path('series/create/', views.create_series, name="db_create_series"),
+    path('series/<int:pk>/', views.update_series, name="db_update_series"),
+    path('categories/', views.list_category, name="dashboard_category"),
+    path('categories/create/', views.create_category, name="db_create_category"),
+    path('categories/<int:pk>/', views.update_category, name="db_update_category"),
+    path('customer/', views.list_customers, name="dashboard_customer"),
+    path('dashboard-api/', views.dashboard_json),
+    path('bill/<str:pk>/', views.get_bill),
+    path('comments/', views.review_rating, name="dashboard_comments"),
+    path('comments/<int:pk>/', views.review_rating_detail, name="db_detail_review_rating"),
+    path('news/', views.db_list_news, name='dashboard_news'),
+    path('news/create/', views.db_create_news, name="db_create_news"),
+    path("news/<int:pk>/", views.db_update_news, name="db_update_news"),
+    path("report/", views.view_report_orders, name="view_report"),
+    path("orderbyweek/", views.by_week),
+    path("orderbymonth/", views.by_month),
+]

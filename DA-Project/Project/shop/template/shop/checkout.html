@@ -1,0 +1,35 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+<div class="checkout">
+    <div class="container">
+        <div class="row" style="justify-content: center">
+            <div class="col-md-6">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="billing-address">
+                        <h3 style="text-align: center">Thông tin khách hàng</h3>
+                        <label for="full_name"><i class="fa fa-user"></i> Họ tên</label>
+                        {{ form.full_name }}
+                        <label for="phone"><i class="fa fa-phone"></i> Số điện thoại</label>
+                        {{ form.phone }}
+                        <label for="address"><i class="far fa-address-card"></i>Địa chỉ nhận hàng</label>
+                        {{ form.address }}
+                        <label for="state"><i class="fa fa-institution"></i> Quận/Huyện</label>
+                        {{ form.state }}
+                        <label for="city"><i class="fa fa-institution"></i> Thành phố</label>
+                        {{ form.city }}
+                        <label for="note"><i class="far fa-clipboard"></i></i> Ghi chú</label>
+                        {{ form.note }}       
+                    </div>
+                    <input class="btn-checkout btn btn-success" type="submit" value="Đặt hàng">
+                </form>
+            </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

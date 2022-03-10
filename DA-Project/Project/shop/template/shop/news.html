@@ -1,0 +1,60 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+<main class="container">
+
+  <div class="row mb-1">
+    {% for news in newss %}
+    <div class="col-md-12">
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative" style="height: 150px">
+        <div class="col-auto d-none d-lg-block">
+            <img width="218" height="150" src="{{ news.imageURL }}"> 
+        </div>
+        <div class="col p-4 d-flex flex-column position-static news">
+          <h3 class="mb-0"><a href="{% url 'news:detail_news' news.slug %}">{{ news.title }}</a></h3>
+          <div class="mb-1 text-muted">{{ news.updated_at }}</div>
+          <div class="card-text mb-auto content-news">{{ news.content|safe }}</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</main>
+<script>
+    const getImg = document.querySelectorAll("p > a > img")
+    for (let i = 0; i < getImg.length; i++) {
+        getImg[i].parentNode.parentNode.remove()
+    }
+    const contentNews = document.getElementsByClassName("content-news")
+    for (let  i = 0; i < contentNews.length; i++) {
+        var content = contentNews[i].firstElementChild.innerHTML
+        content = truncateString(content, 200)
+        contentNews[i].innerHTML = content
+    }
+
+    function truncateString(str, num) {
+        if (str.length > num) {
+            return str.slice(0, num) + "...";
+        } else {
+            return str;
+        }
+    }
+</script>
+{% endblock content %}

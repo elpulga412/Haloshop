@@ -1,0 +1,85 @@
+{% extends 'dashboard/db_category.html' %}
+{% load static %}
+
+{% block category %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <h2 class="header__order">Manage Category</h2>
+    <a href="{% url 'db_create_category' %}"><button style="float: right;">Add Category</button></a>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Image</th>
+          <th scope="col">Name</th>
+          <th scope="col">DateTime</th>
+        </tr>
+      </thead>
+      <tbody class="category__content-table">
+
+      </tbody>
+    </table>
+</div>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+    listCategoryData()
+  function listCategoryData() {
+    urlSearch()
+    const urlSearchParams = new URLSearchParams(window.location.search)
+    const params = Object.fromEntries(urlSearchParams.entries())
+    var url = ""
+    if (params.search != "undefined"){
+      url = `/api/category/?search=${params.search}`
+      if (typeof(params.search) === "undefined"){
+        url = `/api/category/`
+      }
+    }
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const categoryList = data
+      var categoryContentTable = document.querySelector(".category__content-table")
+      categoryContentTable.innerHTML = ""
+      categoryList.forEach(function(categoryItem){
+          var date = new Date(categoryItem.updated_at)
+          var time = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+          var url_category_update = `/dashboard/categories/${categoryItem.id}/`
+          categoryItemHTML = ` <tr class="table list__category-table-item">
+                                    <td><a>${categoryItem.id}<a></td>
+                                    <td><img src="${categoryItem.image}"></td>
+                                    <td><a href="${url_category_update}">${categoryItem.name}<a></td>
+                                    <td>${time}</td>
+                                    <td><button type="button" class="del-item btn btn-danger" data-id="${categoryItem.id}"><i class="fa-solid fa-trash-can"></i></button></td>
+                              </tr>
+                              `
+          categoryContentTable.innerHTML += categoryItemHTML
+      })
+      // delete
+      deleteCategory(data)
+
+    })
+  }
+
+
+    function deleteCategory(data) {
+        const delItem = document.getElementsByClassName("del-item")
+        for (let i = 0; i < delItem.length; i++) {
+          delItem[i].addEventListener("click", function(){
+            var categoryId = delItem[i].dataset.id
+            fetch(`/api/category/${categoryId}`, {
+              method: "DELETE",
+              headers: {
+                'Content-type':'application/json',
+                'X-CSRFToken':csrftoken,
+              },
+            })
+            .then(() => {
+                alert("Delete Success")
+                window.location.reload()              
+            })
+            .catch((error) => alert("Delete not Success"))         
+          })
+        }      
+    }
+</script>
+
+{% endblock category %}

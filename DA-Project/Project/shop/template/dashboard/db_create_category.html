@@ -1,0 +1,30 @@
+{% extends 'dashboard/db_category.html' %}
+{% block category %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div id="list-form">
+        <h3>Add Category</h3>
+        {% include 'shop/alert.html' %}
+        <form class="form__create form-category" id="form-category" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            <div class="form-item">
+                <label for="id_category">Brand Name</label>
+                {{ form.name }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="id_image">Image</label>
+                {{ form.image }}
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="id_description">Description</label>
+                {{ form.description }}
+            </div>
+            <hr>
+            <a class="btn btn-secondary" href="{% url 'dashboard_category' %}">Back</a>
+            <input class="form-submit btn btn-primary submit-category" id="form-category" type="submit" value="Save" onclick="addSeries()">
+        </form>
+    </div>
+</div>
+{% endblock category %}

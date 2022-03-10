@@ -1,0 +1,92 @@
+{% extends 'dashboard/db_series.html' %}
+{% load static %}
+{% block series %}
+
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <h2 class="header__news">Manage News</h2>
+    <a href="{% url 'db_create_news' %}"><button style="float: right;">Add News</button></a>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col" style="width:60%">Title</th>
+          <th scope="col">Update at</th>
+        </tr>
+      </thead>
+      <tbody class="news__content-table">
+
+      </tbody>
+    </table>
+</div>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+    listNewsData()
+  function listNewsData() {
+    urlSearch()
+    const urlSearchParams = new URLSearchParams(window.location.search)
+    const params = Object.fromEntries(urlSearchParams.entries())
+    var url = ""
+    if (params.search != "undefined"){
+      url = `/api/news/?search=${params.search}`
+      if (typeof(params.search) === "undefined"){
+        url = `/api/news/`
+      }
+    }
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const newsList = data
+      var newsContentTable = document.querySelector(".news__content-table")
+      newsContentTable.innerHTML = ""
+      newsList.forEach(function(newsItem){
+          var date = new Date(newsItem.updated_at)
+          var time = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+          var textTitle = truncateString(newsItem.title, 80)
+          var url_news_update = `/dashboard/news/${newsItem.id}/`
+          newsItemHTML = ` <tr class="table list__series-table-item">
+                                  <td><a>${newsItem.id}<a></td>
+                                  <td><a href="${url_news_update}">${textTitle}<a></td>
+                                  <td>${time}</td>
+                                  <td><button type="button" class="del-item btn btn-danger" data-id="${newsItem.id}"><i class="fa-solid fa-trash-can"></i></button></td>
+                              </tr>
+                              `
+          newsContentTable.innerHTML += newsItemHTML
+      })
+      //delete
+      deleteSeries(data)
+
+    })
+  }
+
+
+    function deleteSeries(data) {
+        const delItem = document.getElementsByClassName("del-item")
+        for (let i = 0; i < delItem.length; i++) {
+          delItem[i].addEventListener("click", function(){
+            var newsId = delItem[i].dataset.id
+            fetch(`/api/news/${newsId}`, {
+              method: "DELETE",
+              headers: {
+                'Content-type':'application/json',
+                'X-CSRFToken':csrftoken,
+              },
+            })
+            .then(() => {
+                alert("Delete Success")
+                window.location.reload()              
+            })
+            .catch((error) => alert("Delete not Success"))         
+          })
+        }      
+    }
+
+    function truncateString(str, num) {
+        if (str.length > num) {
+            return str.slice(0, num) + "...";
+        } else {
+            return str;
+        }
+    }
+
+</script>
+{% endblock series %}

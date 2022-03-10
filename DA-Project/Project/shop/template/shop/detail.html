@@ -1,0 +1,419 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block content %}
+<section>
+    <div class="container">
+        <div class="product-detail">
+            <div class="top__product-detail">
+                <h4>Điện thoại di động {{ product.version.name }} - {{ product.capacity }}</h4>
+            </div>
+            <div class="container__product-detail">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="product__content">
+                            <div class="col-sm-6">
+                                <div class="previewSlide">
+                                    <div class="preview__slide-gallery">
+                                        <img id="featured-img" alt="">
+                                        <a class="btn-slide" id="prev-detail" style="cursor: default;"><strong>❮</strong></a>
+                                        <a class="btn-slide" id="next-detail" style="cursor: default;"><strong>❯</strong></a>
+                                    </div>
+                                    <div class="preview__sub-slide">
+                                        
+                                        <div class="preview__thumbnail-list" id="preview__thumbnail">
+                                            {% for variation in variations %}
+                                            <img class="thumbnail-img" src="{{ variation.imageURL }}" alt="">
+                                            {% endfor %}
+                                        </div>      
+                                        <a class="btn-sub-thumbnail" id="sub-prev" style="cursor: default;"><strong>❮</strong></a>
+                                        <a class="btn-sub-thumbnail" id="sub-next" style="cursor: default;"><strong>❯</strong></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="product-center">
+                                    <div class="product__center-top">
+                                        <span id="new-price"><strong>{{ product.price|floatformat:'-3g' }}</strong></span>
+                                        {% comment %} <span id="old-price">18,450,000</span>
+                                        <span>|<span>
+                                        <span id="text-VAT">Giá đã bao gồm 10% VAT </span> {% endcomment %}
+                                    </div>
+                                    <div class="result-rating">
+
+                                    </div>  
+                                    <hr>
+                                    <div class="product__center-version">
+                                        <div class="product__center-text"><strong>Lựa chọn phiên bản</strong></div>
+                                        <div class="product__center-options">
+                                            {% for productVer in productVers %}                  
+                                            <a href="{% url 'shop:detail' productVer.slug %}" class="option {% if productVer.id == product.id %}option-active{% endif %}" data-color={{ productVer.color }}>                            
+                                                <label>{{ productVer.capacity }}</label>
+                                                <strong id="future-price">{{ productVer.price|floatformat:'-3g' }}</strong>
+                                            </a>
+                                            {% endfor %}
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="product__center-color">
+                                        <div class="product__center-text"><strong>Lựa chọn màu</strong></div>
+                                        <div class="product__center-options">
+                                            {% for variation in variations %}   
+                                            <a class='option option-color' data-color="{{ variation.color }}" >                         
+                                                <label>   
+                                                    <strong>{{ variation.color }}</strong><small><i>({{variation.stock}})</i></small>
+                                                </label>
+                                                <strong id="future-price">{{ variation.product.price|floatformat:'-3g' }}</strong>
+                                            </a>  
+                                            {% endfor %}                                 
+                                        </div>
+                                    </div>
+                                    <div class="product-action update-cart" data-product="{{ product.id }}" data-act="add">
+                                        <a>
+                                            <span>THÊM VÀO GIỎ HÀNG<span>
+                                            <i class="add-to-cart fas fa-cart-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-lg-4">
+                        <div class="product-left">
+                            <div class="product__left-title">
+                                <span><strong>THÔNG SỐ KỸ THUẬT IPHONE APPLE 13</strong></span>
+                            </div>
+                            <div class="product__left-params">
+                                <p><strong>Công nghệ màn hình:</strong><span>  OLED</span></p>
+                                <p><strong>Độ phân giải:</strong><span>  1170 x 2532 Pixels, 2 camera 12 MP, 12 MP</span></p>
+                                <p><strong>Hệ điều hành:</strong><span>  IOS 15</span></p>
+                                <p><strong>Chip sử lý (CPU):</strong><span>  Apple A15 Bionic 6 nhân</span></p>
+                                <p><strong>Bộ nhớ trong (ROM):</strong><span>  128GB</span></p>
+                                <p><strong>RAM:</strong><span>  4Gb</span></p>
+                                <p><strong>Mạng di động:</strong><span>  Hỗ trợ 5G</span></p>
+                                <p><strong>Số khoe cắm sim:</strong><span>  1 Nano SIM và 1 eSIM</span></p>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <div class="product-description">
+                <div class="product_desc-text" id="shrink-desc">
+                    {{ product.version.description|safe}}
+                </div>
+                <div class="view-more-product">
+                    <button class="more-view-content">XEM THÊM</button>
+                </div>
+            </div>
+        </div>
+        {% if productRelateds|length > 0 %}
+        <div class="product-related">
+            <h4>Sản phẩm liên quan</h4>
+            <div class="product__related-container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3" id='product__related-list'>
+                    {% for productRelated in productRelateds %}
+                    <div class="col">
+                        <div class="card shadow-sm main__item"> 
+                        <a href="{{ productRelated.get_product_url }}" class="main_item-link">
+                            <div class="main__img">
+                            <img class="main__item-img" src="{{ productRelated.imageURL }}" alt="">
+                            </div>
+                            <div class="main__item-rating">
+                            <span class="main__item-rating-star">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                            <span style="color: #000;"><small>(1 views)</small></span>
+                            </div>
+                            <div class="card-body">
+                            <p class="main__item-name card-text"><strong>{{  productRelated.version.name}}-{{  productRelated.capacity }}</strong></p>
+                            <p class="main__item-price card-text"><strong style="color: red;">{{  productRelated.price|floatformat:"-3g" }} đ</strong> <span style="font-size: 0.9rem"><del>24,990,000</del></span></p>
+                            </div>
+                        </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a class="prev-related" id="prev-btn-related">❮</a>
+                <a class="next-related" id='next-btn-related'>❯</a>
+            </div>
+        </div>
+        {% endif %}
+    
+        <div class="review-rating">
+            <div class="review__rating-container">
+                <div class="review__rating-heading">
+                    <h3>Bình luận về {{ product.version.name }}</h3>
+                </div>
+                <form action="" id="comment-form" method="POST">
+                    {% csrf_token %}
+                    <div class="review__rating-form">
+                        <div class="rate">
+                            <input type="radio" name="rating" class="vote" id="rating10" value="5" required><label for="rating10" title="5"></label>
+                            <input type="radio" name="rating" class="vote" id="rating9" value="4.5" required><label for="rating9" title="4.5" class="half"></label>
+                            <input type="radio" name="rating" class="vote" id="rating8" value="4" required><label for="rating8" title="4"></label>
+                            <input type="radio" name="rating" class="vote" id="rating7" value="3.5" required><label for="rating7" title="3.5" class="half"></label>
+                            <input type="radio" name="rating" class="vote" id="rating6" value="3" required><label for="rating6" title="3"></label>
+                            <input type="radio" name="rating" class="vote" id="rating5" value="2.5" required><label for="rating5" title="2.5" class="half"></label>
+                            <input type="radio" name="rating" class="vote" id="rating4" value="2" required><label for="rating4" title="2"></label>
+                            <input type="radio" name="rating" class="vote" id="rating3" value="1.5" required><label for="rating3" title="1.5" class="half"></label>
+                            <input type="radio" name="rating" class="vote" id="rating2" value="1" required><label for="rating2" title="1"></label>
+                            <input type="radio" name="rating" class="vote" id="rating1" value="0.5" required><label for="rating1" title="0.5" class="half"></label>
+                        </div>
+                        Review Title:
+                        <input type="text" class="form-control" id="id_subject" name="subject">
+                        <br>
+                        Review:
+                        <textarea name="review" id="id_comment" rows="4" class="form-control"></textarea>
+                        <br>
+                        <input type="submit" value="submit review" >
+                    </div>
+                </form>
+                <div class="comment-list">
+                    <div class="comment-item">
+                        {% comment %} <div class="infor-comment">
+                            <span style="margin: 0;"><strong class="name">{{ review.user.full_name }}</strong></span>
+                            <span style="margin: 0;"><label for=""><i><small>{{ review.created_at|timesince }}</small></i></label></span>
+                        </div>
+                        <div class="rating-star">
+                            <span>
+                                <i class="{% if review.rating < 1 %}far {% else %} fas {% endif %} fa-star{% if review.rating == 0.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                                <i class="{% if review.rating < 2 %}far {% else %} fas {% endif %} fa-star{% if review.rating == 1.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                                <i class="{% if review.rating < 3 %}far {% else %} fas {% endif %} fa-star{% if review.rating == 2.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                                <i class="{% if review.rating < 4 %}far {% else %} fas {% endif %} fa-star{% if review.rating == 3.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                                <i class="{% if review.rating < 5 %}far {% else %} fas {% endif %} fa-star{% if review.rating == 4.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <div class="content-comment">{{ review.review }}</div> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+<script>
+    /* Slide IMG */
+    details()
+
+    /* PRODUCT RELATED */
+
+function details(){
+        let thumbnails = document.getElementsByClassName('thumbnail-img')
+    thumbnails[0].classList.add('actived')
+    let activedImages = document.getElementsByClassName('actived')
+    document.getElementById("featured-img").src = activedImages[0].src ;
+    let slideIndex = 1
+    let prevDetailBtn = document.getElementById('prev-detail')
+    prevDetailBtn.addEventListener('click', function() {
+        
+    })
+
+    let nextDetailBtn = document.getElementById('next-detail')
+    
+
+    for (let i = 0; i < thumbnails.length; i++) {
+        thumbnails[i].addEventListener('mouseover', function() {
+            if(activedImages.length > 0) {
+                activedImages[0].classList.remove('actived')
+            }
+            this.classList.add('actived')
+            document.getElementById('featured-img').src = this.src   
+        })
+    }
+
+    let maxScrollLeft = document.getElementById('preview__thumbnail').scrollLeftMax
+
+    let subPrevBtn = document.getElementById('sub-prev')
+    subPrevBtn.addEventListener('click', function() {
+        document.getElementById('preview__thumbnail').scrollLeft -= 180;
+    })
+
+    let subNextBtn = document.getElementById('sub-next')
+    subNextBtn.addEventListener('click', function() {
+        let scrollNextBtn = document.getElementById('preview__thumbnail').scrollLeft += 180
+    })
+    /* ND SLIDE IMG */
+    let productDescText = document.querySelector('.product_desc-text');
+    let moreViewContent = document.querySelector('.more-view-content');
+    moreViewContent.addEventListener('click', function(){
+        productDescText.classList.toggle('desc-active')
+        var shrinkDesc = document.getElementById('shrink-desc')
+        if (shrinkDesc.classList.contains('desc-active')) {
+            moreViewContent.innerHTML = 'THU GỌN'
+        }
+        else {
+            moreViewContent.innerHTML = 'XEM THÊM'
+        }
+        
+    })
+
+
+    let optionColors = document.getElementsByClassName('option-color')
+    let lenghOptionColor = optionColors.length
+    optionColors[0].classList.add('option-active')
+    for (let i = 0; i < lenghOptionColor; i++) {
+        optionColors[i].addEventListener('click', function(){
+            let optionActive = document.getElementsByClassName('option-active')
+            if (optionActive.length > 1) {
+                optionActive[1].classList.remove('option-active')
+            }
+            this.classList.add('option-active')               
+        })
+    }
+
+    productRelated()
+    webSocket()
+    reviewFunc()
+}
+/*==================================== FUNCTION =====================================*/
+function productRelated() {
+    let prevBtnRelated = document.getElementById('prev-btn-related')
+    if (prevBtnRelated != null) {
+        prevBtnRelated.addEventListener('click', function(){
+            document.getElementById('product__related-list').scrollLeft -= 180
+        }) 
+    } 
+
+    let nextBtnRelated = document.getElementById('next-btn-related')
+    if (nextBtnRelated != null) {
+        nextBtnRelated.addEventListener('click', function(){
+            document.getElementById('product__related-list').scrollLeft += 180
+        })
+    }
+}
+
+/* -------------------WEBSOCKET------------------------*/ 
+function webSocket() {
+    var loc = window.location
+    var formReviewData = document.getElementById('comment-form')
+    var voteForm = document.getElementsByClassName('vote')
+    for (let i = 0; i < voteForm.length; i++) {
+        voteForm[i].addEventListener('click', function(){
+            localStorage.setItem('rating', voteForm[i].value)
+        })
+    }
+
+    var commentInput = document.getElementById('id_comment')
+    var subjectInput = document.getElementById('id_subject')
+    var commentHolder = document.querySelector(".comment-list")
+    var wsStart = "ws://"
+    if (loc.protocol == "https:") {
+        wsStart = "wss://"
+    }
+    var endpoint = wsStart + loc.host + loc.pathname
+    var socket = new ReconnectingWebSocket(endpoint)
+
+    socket.onmessage = function(e) {
+        console.log('message', e)
+        var commentData = JSON.parse(e.data)
+        var starHTML = buildStar(commentData.vote)
+        console.log(starHTML)
+        var commentItem =   `<div class="comment-item">
+                                <div class="infor-comment">
+                                    <span style="margin: 0;"><strong class="name">${commentData.name}</strong></span>
+                                    <span style="margin: 0;"><label for=""><i><small>${commentData.time}</small></i></label></span>
+                                </div>` +
+                                `<div class="rating-star">
+                                    <span>
+                                        ${starHTML}
+                                    </span>
+                                </div>` +
+                                `
+                                <div class="content-comment">${commentData.comment}</div>
+                            </div>
+                        `
+                    
+        commentHolder.insertAdjacentHTML('afterbegin', commentItem)
+        reviewFunc()
+    }
+
+    socket.onopen = function(e) {
+        console.log('open', e)
+        formReviewData.addEventListener('submit', function(event){
+            event.preventDefault()
+            var ratingValue = localStorage.getItem('rating')
+            var msgComment = commentInput.value
+            var msgSubject = subjectInput.value
+            var time = new Date()
+            timeline = humanized_time_span(time)
+            var finalData = {
+                'rating': ratingValue,
+                'comment': msgComment,
+                'subject': msgSubject,
+                'time': timeline,
+            }
+            socket.send(JSON.stringify(finalData))
+        })
+    }
+    socket.onerror = function(e) {
+        console.log('error', e)
+    }
+    socket.onclose = function(e) {
+        console.log('close', e)
+    }
+
+}
+
+function buildStar(commentData) {
+    var starHTML = ``
+    for (let i = 1; i <= 5; i++) {
+        if (i <= parseFloat(commentData) + 0.2) {
+            starHTML += `<i class="fas fa-star" aria-hidden="true"></i>`
+        }if ((i - parseFloat(commentData)) > 0.2 && (i - parseFloat(commentData)) < 0.8) {
+            starHTML += `<i class="fas fa-star-half-alt" aria-hidden="true"></i>`
+        }
+        else if (i >= parseFloat(commentData) + 0.8) {
+            starHTML += `<i class="far fa-star" aria-hidden="true"></i>`
+        }
+    }
+    return starHTML
+}
+
+function reviewFunc() {
+    var totalRating = 0
+    var countIndex
+    var commentHTML = ""
+    var versionName = '{{ product.version.name }}'
+    fetch("/API-comments/")
+    .then((response)=>response.json())
+    .then(function(data){
+        var comments = data
+        var filterComments = comments.filter(function(comment) {
+            return comment.version_id==versionName;
+        })
+
+        filterComments.forEach(function(item, index){
+            var starHTML = buildStar(item.rating)
+            var time = item.created_at
+            time = humanized_time_span(time)
+            var text = `<div class="infor-comment">
+                            <span style="margin: 0;"><strong class="name">${item.user_id}</strong></span>
+                            <span style="margin: 0;"><label for=""><i><small>${time}</small></i></label></span>
+                        </div>
+                        <div class="rating-star">
+                            ${starHTML}
+                        </div>
+                        <div class="content-comment">${item.review}</div>
+                    `
+            commentHTML += text
+            totalRating += parseFloat(item.rating);
+            countIndex = index + 1
+        })
+        document.querySelector(".comment-item").innerHTML = commentHTML
+
+        const avgRating = (totalRating / countIndex).toFixed(1)
+        var resultRating = buildStar(avgRating)
+        document.querySelector(".result-rating").innerHTML = resultRating + 
+                                                            `<span>
+                                                                <small><i>
+                                                                    (${avgRating}star/${countIndex}vote)
+                                                                </i></small>
+                                                            </span>`
+    })
+}
+</script>
+
+{% endblock content %}

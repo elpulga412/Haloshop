@@ -1,0 +1,29 @@
+<div class="auth-form__form" id="login">
+    <h1>Đăng nhập</h1>
+    <hr>
+    <form action="" method="POST" id='form-login'>
+      <div class="auth-form__internal">
+        <div class="row">
+          <div class="auth-form__internal-label">Email</div>
+          <div class="auth-form__internal-input">
+            <input type="text" name="email">
+          </div>
+        </div>
+        <div class="row">
+          <div class="auth-form__internal-label">Mật khẩu</div>
+          <div class="auth-form__internal-input">
+            <input type="password" name="password">
+          </div>
+        </div>
+        <div class="row">
+          <div class="auth-form__internal-btn">
+            <button class="btn-login" type="submit" onclick='handleLogin()'>ĐĂNG NHẬP</button>
+            <a class="btn-register" onclick="registerPage()">ĐĂNG KÝ</a>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="auth-form__internal-forgot">
+      <a href="">Quên mật khẩu</a>
+    </div>
+</div>

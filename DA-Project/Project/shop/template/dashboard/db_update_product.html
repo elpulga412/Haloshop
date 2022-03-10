@@ -1,0 +1,36 @@
+{% extends 'dashboard/db_product.html' %}
+{% block product %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div id="list-form">
+        <h3>Cập nhật sản phẩm</h3>
+        {% include 'shop/alert.html' %}
+        <form class="form__create" id="form-version" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="display: grid;">
+                <div class="form-item">
+                    <label for="product-name">Phiên bản</label>
+                    {{ form.version }}
+                </div>
+                <hr>
+                <div class="form-item">
+                    <label for="series">Dung lượng</label>
+                    {{ form.capacity }}
+                </div>
+                <hr>
+                <div class="form-item">
+                    <label for="name">Giá</label>
+                    {{ form.price }}
+                </div>
+                <hr>
+                <div class="form-item">
+                    <label for="description">Active</label>
+                    {{ form.is_active }}
+                </div>
+                <hr>
+            </div>
+            <button class="form-submit btn btn-primary submit-variation" type="submit" value="add-series" name="save">Save</button>
+            <a class="btn btn-secondary" href="{% url 'dashboard_product' %}" role="button">Back</a>
+        </form>
+    </div>
+</div>
+{% endblock product %}

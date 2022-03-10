@@ -1,0 +1,163 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block content %}
+
+<section>
+    <div class="container-xl">
+        <div class="top__cateogry-category"> 
+            <div id="top__category-list-category" style="display: flex;">
+                <ul id="top__category-list">
+                  {% for category in categories %}
+                    <a href="{{ category.get_category_link }}" class="top__category-link">
+                        <li class="top__category-item">
+                            <img src="{{ category.urlImage }}" alt="">
+                        </li>
+                    </a>
+                  {% endfor %}
+                </ul>
+            </div>
+            <div class="top__category-list-btn" style="display:none">
+                <button id="previous-btn" onclick="plusSlides(-1)"><i class="fas fa-caret-left"></i></button>
+                <button id="next-btn" onclick="plusSlides(1)"><i class="fas fa-caret-right"></i></button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container-xl">
+        <div class="product-filters">
+            <div class="filters">
+                <div class="component-filter">
+                    <strong style="color: #00917a;">Lọc danh sách:</strong>
+                </div>
+                {% if series|length > 0 %}
+                <div class="component-filter">
+                    <label for="">
+                        <a href="" class="category-filter">Danh mục</a>
+                        <span><i class="fas fa-chevron-down"></i></span>
+                    </label>
+                    <div class="conponent-filter-sub">
+                        <ul>
+                          {% if slug_category == None %}
+                            {% for category in categories %}
+                              <li><a href="{{ category.get_category_link }}">{{ category.name|title }}</a></li>
+                            {% endfor %}
+                          {% else %}
+                            {% for serie in series %}
+                            <li><a href="{{ serie.get_series_link }}">{{ serie.name|title }}</a></li>
+                            {% endfor %}
+                          {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="component-filter">
+                    <label for="">
+                        <a href="" class="category-filter">Giá</a>
+                        <span><i class="fas fa-chevron-down"></i></span>
+                    </label>
+                    <div class="conponent-filter-sub">
+                        <ul>
+                            <li><a class="search_price" href="">Dưới 6 triệu</a></li>
+                            <li><a class="search_price" href="">Từ 6 - 10 triệu</a></li>
+                            <li><a class="search_price" href="">Từ 10 - 15 triệu</a></li>
+                            <li><a class="search_price" href="">Từ 15 - 20 triệu</a></li>
+                            <li><a class="search_price" href="">Trên 20 triệu</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="component-filter">
+                    <label for="" >
+                        <a href="" class="category-filter">Sắp xếp</a>
+                        <span><i class="fas fa-chevron-down"></i></span>
+                    </label>
+                    <div class="conponent-filter-sub">
+                        <ul>
+                            <li><a class="search_sort">Giá từ thấp đến cao</a></li>
+                            <li><a class="search_sort">Giá từ cao đến thấp</a></li>
+                            <li><a class="search_sort">Mới cập nhật</a></li>
+                            <li><a class="search_sort">Sản phẩm cũ</a></li>
+                        </ul>
+                    </div>          
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="album py-5 bg-light">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+
+          {% for product in products %}
+          <div class="col">
+            <div class="card shadow-sm main__item"> 
+              <a href="{{ product.get_product_url }}" class="main_item-link">
+                <div class="main__img">
+                  <img class="main__item-img" src="{{ product.imageURL }}" alt="">
+                </div>
+                <div class="main__item-rating">
+                  <span class="main__item-rating-star">
+                    <i class="{% if product.version.get_rating < 1 %}far {% else %} fas {% endif %} fa-star{% if product.version.get_rating == 0.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                    <i class="{% if product.version.get_rating < 2 %}far {% else %} fas {% endif %} fa-star{% if product.version.get_rating == 1.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                    <i class="{% if product.version.get_rating < 3 %}far {% else %} fas {% endif %} fa-star{% if product.version.get_rating == 2.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                    <i class="{% if product.version.get_rating < 4 %}far {% else %} fas {% endif %} fa-star{% if product.version.get_rating == 3.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                    <i class="{% if product.version.get_rating < 5 %}far {% else %} fas {% endif %} fa-star{% if product.version.get_rating == 4.5 %}-half-alt{% endif %}" aria-hidden="true"></i>
+                  </span>
+                  <span style="color: #000;"><small>{{ product.version.get_vote }}</small></span>
+                </div>
+                <div class="card-body">
+                  <p class="main__item-name card-text"><strong>{{ product.version.name}}-{{ product.capacity }}</strong></p>
+                  <p class="main__item-price card-text"><strong style="color: red;">{{ product.price|floatformat:"-3g" }} đ</strong> <span style="font-size: 0.9rem"><del>24,990,000</del></span></p>
+                </div>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+          
+          
+        </div>  
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="container">
+        <div class="store-footer">
+            
+        </div>
+    </div>
+</section>
+  <script>
+    const productPrice = document.getElementsByClassName("search_price")
+    const currentHref = window.location.href
+    var url = new URL(currentHref)
+    for (let i = 0; i < productPrice.length; i++){
+      var str = (productPrice[i].textContent).replace(/\s+/g, '-').replace("--", '')
+      str = str.toLowerCase()
+      str = rmVietNamese(str)
+      url.searchParams.set('q', str)
+      productPrice[i].href = url.href
+    }
+    const searchSort = document.getElementsByClassName('search_sort')
+    var url = new URL(currentHref)
+    for (let i = 0; i < searchSort.length; i++) {
+      var str = (searchSort[i].textContent).replace(/\s+/g, '-')
+      str = str.toLowerCase()
+      str = rmVietNamese(str)
+      url.searchParams.set('sort', str)
+      searchSort[i].href = url.href
+    }
+  function rmVietNamese(str) {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
+    str = str.replace(/đ/g,"d");
+    return str
+  }
+</script>
+{% endblock content %}

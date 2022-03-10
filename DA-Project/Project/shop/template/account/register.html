@@ -1,0 +1,51 @@
+{% extends 'shop/base.html' %}
+
+{% load static %}
+{% block content %}
+<div class="register">
+    <div class="container">
+        <div class="register-container">
+            <div class="w3-card-4">
+                <div class="w3-container w3-">
+                  <h2><strong>ĐĂNG KÝ</strong></h2>
+                </div>
+                <form class="w3-container register-form" action="" method='POST'>
+                    {% csrf_token %}
+                    <p>      
+                        <label class="w3-text"><b>Email:</b></label>
+                        {{ form.email }}</p>
+                        {{ form.email.errors }}
+                        
+                    <p>      
+                        <label class="w3-text"><b>Họ tên:</b></label>
+                        {{ form.full_name }}</p> 
+                    <p>      
+                        <label class="w3-text"><b>Mật khẩu:</b></label>
+                        {{ form.password }}</p>
+                    <p>      
+                        <label class="w3-text"><b>Nhập lại mật khẩu:</b></label>
+                        {{ form.re_password }}</p>
+                        {{ form.non_field_errors }}
+                    <p>      
+                        <label class="w3-text"><b>Số điện thoại:</b></label>
+                        {{ form.phone }}</p> 
+                    <p>      
+                        <label class="w3-text"><b>Địa chỉ:</b></label>
+                        {{ form.address }}</p>           
+                    <p class="login__btn-form">
+                        <button class="w3-btn w3-teal btn-login">Đăng ký</button>
+                        <a class="w3-btn btn-register" href="{% url 'account:login' %}">Trở về đăng nhập</a>
+                    </p>
+                </form>
+            </div>           
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        setTimeout(function(){
+            $('.errorlist').fadeOut(5000);
+        }, 5000)
+    });
+</script>
+{% endblock content %}

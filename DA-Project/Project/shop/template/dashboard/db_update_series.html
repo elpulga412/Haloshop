@@ -1,0 +1,26 @@
+{% extends 'dashboard/db_series.html' %}
+
+{% block series %}
+<div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div id="list-form">
+        <h3>Update Series</h3>
+        {% include 'shop/alert.html' %}
+        <form class="form__create form-series" id="form-series" action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-item">
+                <label for="id_category">Category</label>
+                {{ form_series.category }}
+                
+            </div>
+            <hr>
+            <div class="form-item">
+                <label for="id_name">Series name</label>
+                {{ form_series.name }}
+            </div>
+            <hr>
+            <a class="btn btn-secondary" href="{% url 'dashboard_series' %}">Back</a>
+            <input class="form-submit btn btn-primary submit-series" id="form-submit" type="submit" value="Save">
+        </form>
+    </div>
+</div>
+{% endblock series %}

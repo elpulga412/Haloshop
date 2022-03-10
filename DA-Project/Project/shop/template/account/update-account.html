@@ -1,0 +1,35 @@
+{% extends 'shop/base.html' %}
+
+
+{% block content %}
+    <div class="infor-user">
+        <div class="container">
+            <div class="infor__user-container">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="infor__user-form w3-card-4">
+                        <h3 class="w3-center"><strong>Thông tin tài khoản</strong></h3>                    
+                        {% include 'shop/alert.html' %}
+                        <p>
+                        <label for="">Email: </label>
+                        <span>shanks4449</span>
+                        </p>
+                        <p>
+                        <label for="">Họ tên: </label>
+                        {{ form.full_name }}
+                        </p>
+                        <p>
+                        <label for="">Số điện thoại: </label>
+                        {{ form.phone }}
+                        </p>
+                        <p>
+                        <label for="">Địa chỉ</label>
+                        {{ form.address }}
+                        </p>
+                        <button type="submit" class="btn btn-success">Cập nhật</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
